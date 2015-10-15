@@ -23,13 +23,18 @@ if [[ -h "/opt/phpfarm/custom/options.sh" && $(readlink "/opt/phpfarm/custom/opt
 fi
 
 %triggerin -- phpfarm
-if [[ ! -h "/opt/phpfarm/custom/options.sh" || ! $(readlink "/opt/phpfarm/custom/options.sh") = "/nenadalm-config/phpfarm/opt/phpfarm/custom/options.sh" ]]; then
-    mkdir -p "/opt/phpfarm/custom"
-    if [[ -e "/opt/phpfarm/custom/options.sh" ]]; then
-        mv -f "/opt/phpfarm/custom/options.sh" "/opt/phpfarm/custom/options.sh.orig"
+file='/nenadalm-config/phpfarm'
+package=$(basename "${file}")
+for package_config_file in $(find "${file}" -type f); do
+    target_config_file="${package_config_file#/nenadalm-config/${package}}"
+    if [[ ! -h "${target_config_file}" || ! $(readlink "${target_config_file}") = "${package_config_file}" ]]; then
+        mkdir -p $(dirname "${target_config_file}")
+        if [[ -e "${target_config_file}" ]]; then
+            mv -f "${target_config_file}" "${target_config_file}.orig"
+        fi
+        ln -s "${package_config_file}" "${target_config_file}"
     fi
-    ln -s "/nenadalm-config/phpfarm/opt/phpfarm/custom/options.sh" "/opt/phpfarm/custom/options.sh"
-fi
+done
 
 %triggerun -- phpfarm
 if [[ $1 -eq 0 && $2 -gt 0 && -e "/opt/phpfarm/custom/options.sh.orig" ]]; then
