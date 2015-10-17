@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -eu
+
+cd "$(dirname ${0})/../"
+
+docker build -t nenadalm_rpmbuild_tests .
+docker run --privileged --rm -v $(pwd):/mnt/rpmbuild nenadalm_rpmbuild_tests
+

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+package_dir=/opt/phpfarm
+rpmbuild_dir=/mnt/rpmbuild
+working_dir=/tmp/rpmtest
+
+function oneTimeSetUp() {
+    mkdir -p "${working_dir}"
+    packages=('phpfarm' 'nenadalm-config')
+    for package in "${packages[@]}"; do
+        package='phpfarm'
+        rpm_file=$(rpmbuild -bb "/root/rpmbuild/SPECS/${package}.spec" | grep -oP '(?<=Wrote: ).*')
+        cp "${rpm_file}" "${working_dir}/${package}.rpm"
+    done
+    cd "${working_dir}"
+}
+
+function testCustomDirectoryIsEmtyWhenPackageIsInstalled() {
+    dnf install -y ./phpfarm.rpm
+    package_files=$(ls "${package_dir}")
+    custom_files=$([[ -e "${package_dir}/custom" ]] && echo 1 || echo '')
+
+    assertNotNull "\"${package_dir}\" is empty when it's not supposed to" "${package_files}"
+    assertNull "\"${package_dir}/custom\" is not empty when it's supposed to" "${custom_files}"
+}
+
