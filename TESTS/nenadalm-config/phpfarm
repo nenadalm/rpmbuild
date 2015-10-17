@@ -8,17 +8,112 @@ function oneTimeSetUp() {
     mkdir -p "${working_dir}"
     packages=('phpfarm' 'nenadalm-config')
     for package in "${packages[@]}"; do
-        package='phpfarm'
         rpm_file=$(rpmbuild -bb "/root/rpmbuild/SPECS/${package}.spec" | grep -oP '(?<=Wrote: ).*')
         cp "${rpm_file}" "${working_dir}/${package}.rpm"
     done
     cd "${working_dir}"
 }
 
+function tearDown() {
+    dnf remove -y phpfarm nenadalm-config
+}
+
+function testPackageDirDoesNotExistsWhenConfigPackageIsInstalled() {
+    dnf install -y ./nenadalm-config.rpm
+
+    assertTrue "\"${package_dir}\" exists when it shouldn't" "[[ ! -e ${package_dir} ]]"
+}
+
 function testCustomDirectoryIsEmtyWhenPackageIsInstalled() {
     dnf install -y ./phpfarm.rpm
     package_files=$(ls "${package_dir}")
+    custom_files=
+    if [[ -e "${package_dir}/custom" ]]; then
+        custom_files=$(ls "${package_dir}/custom")
+    fi
     custom_files=$([[ -e "${package_dir}/custom" ]] && echo 1 || echo '')
+
+    assertNotNull "\"${package_dir}\" is empty when it's not supposed to" "${package_files}"
+    assertNull "\"${package_dir}/custom\" is not empty when it's supposed to" "${custom_files}"
+}
+
+function testCustomDirectoryContainsConfigFilesWhenConfigPackageIsInstalledAfterPackage() {
+    dnf install -y ./phpfarm.rpm
+    dnf install -y ./nenadalm-config.rpm
+    package_files=$(ls "${package_dir}")
+    custom_files=
+    if [[ -e "${package_dir}/custom" ]]; then
+        custom_files=$(ls "${package_dir}/custom")
+    fi
+
+    assertNotNull "\"${package_dir}\" is empty when it's not supposed to" "${package_files}"
+    assertNotNull "\"${package_dir}/custom\" is empty when it's supposed to" "${custom_files}"
+}
+
+function testCustomDirectoryIsEmptyWhenConfigPackageIsInstalledAfterPackageAndThenRemoved() {
+    dnf install -y ./phpfarm.rpm
+    dnf install -y ./nenadalm-config.rpm
+    dnf remove -y nenadalm-config
+    package_files=$(ls "${package_dir}")
+    custom_files=
+    if [[ -e "${package_dir}/custom" ]]; then
+        custom_files=$(ls "${package_dir}/custom")
+    fi
+
+    assertNotNull "\"${package_dir}\" is empty when it's not supposed to" "${package_files}"
+    assertNull "\"${package_dir}/custom\" is not empty when it's supposed to" "${custom_files}"
+}
+
+function testCustomDirectoryIsEmptyWhenConfigPackageIsInstalledAfterPackageAndThenPackageIsRemoved() {
+    dnf install -y ./phpfarm.rpm
+    dnf install -y ./nenadalm-config.rpm
+    dnf remove -y phpfarm
+    package_files=$(ls "${package_dir}")
+    custom_files=
+    if [[ -e "${package_dir}/custom" ]]; then
+        custom_files=$(ls "${package_dir}/custom")
+    fi
+
+    assertNotNull "\"${package_dir}\" is empty when it's not supposed to" "${package_files}"
+    assertNull "\"${package_dir}/custom\" is not empty when it's supposed to" "${custom_files}"
+}
+
+function testCustomDirectoryContainsConfigFilesWhenConfigPackageIsInstalledBeforePackage() {
+    dnf install -y ./nenadalm-config.rpm
+    dnf install -y ./phpfarm.rpm
+    package_files=$(ls "${package_dir}")
+    custom_files=
+    if [[ -e "${package_dir}/custom" ]]; then
+        custom_files=$(ls "${package_dir}/custom")
+    fi
+
+    assertNotNull "\"${package_dir}\" is empty when it's not supposed to" "${package_files}"
+    assertNotNull "\"${package_dir}/custom\" is empty when it's supposed to" "${custom_files}"
+}
+
+function testCustomDirectoryIsEmptyWhenConfigPackageIsInstalledBeforePackageAndThenRemoved() {
+    dnf install -y ./nenadalm-config.rpm
+    dnf install -y ./phpfarm.rpm
+    dnf remove -y nenadalm-config
+    package_files=$(ls "${package_dir}")
+    custom_files=
+    if [[ -e "${package_dir}/custom" ]]; then
+        custom_files=$(ls "${package_dir}/custom")
+    fi
+
+    assertNotNull "\"${package_dir}\" is empty when it's not supposed to" "${package_files}"
+    assertNull "\"${package_dir}/custom\" is not empty when it's supposed to" "${custom_files}"
+}
+
+function testCustomDirectoryIsEmptyWhenConfigPackageIsInstalledBeforePackageAndThenPackageIsRemoved() {
+    dnf install -y ./nenadalm-config.rpm
+    dnf install -y ./phpfarm.rpm
+    dnf remove -y phpfarm
+    package_files=$(ls "${package_dir}")
+    custom_files=
+    if [[ -e "${package_dir}/custom" ]]; then
+        custom_files=$(ls "${package_dir}/custom")
+    fi
 
     assertNotNull "\"${package_dir}\" is empty when it's not supposed to" "${package_files}"
     assertNull "\"${package_dir}/custom\" is not empty when it's supposed to" "${custom_files}"
