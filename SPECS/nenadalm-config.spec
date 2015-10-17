@@ -18,6 +18,9 @@ Config
 %autosetup
 
 %install
+mkdir -p %{buildroot}/usr/bin
+cp -R %{_builddir}/%{name}-%{version}/_bin/* %{buildroot}/usr/bin
+rm -rf %{_builddir}/%{name}-%{version}/_bin
 cp -R %{_builddir}/%{name}-%{version} %{buildroot}/%{name}
 
 %preun
@@ -32,54 +35,17 @@ for file in $(find '/nenadalm-config' -mindepth 1 -maxdepth 1 -type d); do
 done
 
 %triggerin -- phpfarm
-file='/nenadalm-config/phpfarm'
-package=$(basename "${file}")
-for package_config_file in $(find "${file}" -type f); do
-    target_config_file="${package_config_file#/nenadalm-config/${package}}"
-    if [[ ! -h "${target_config_file}" || ! $(readlink "${target_config_file}") = "${package_config_file}" ]]; then
-        existing_dir=$(dirname "${target_config_file}")
-        while [[ ! -e "${existing_dir}" ]]; do
-            existing_dir="${existing_dir%/*}"
-        done
-        mkdir -p $(dirname "${target_config_file}")
-        if [[ "${existing_dir}" != $(dirname "${target_config_file}") ]]; then
-            chown -R $(stat -c %U "${existing_dir}"):$(stat -c %G "${existing_dir}") "${existing_dir}"
-        fi
-        if [[ -e "${target_config_file}" ]]; then
-            mv -f "${target_config_file}" "${target_config_file}.orig"
-        fi
-        ln -s "${package_config_file}" "${target_config_file}"
-    fi
-done
+nc-triggerin '/nenadalm-config/phpfarm'
 
 %triggerun -- phpfarm
-if [[ $1 -eq 0 && $2 -gt 0 ]]; then
-    file='/nenadalm-config/phpfarm'
-    package=$(basename "${file}")
-    for package_config_file in $(find "${file}" -type f); do
-        target_config_file="${package_config_file#/nenadalm-config/${package}}"
-        if [[ -e "${target_config_file}.orig" ]]; then
-            mv -f "${target_config_file}.orig" "${target_config_file}"
-        fi
-    done
-fi
+nc-triggerun "\${1}" "\${2}" '/nenadalm-config/phpfarm'
 
 %triggerpostun -- phpfarm
-file='/nenadalm-config/phpfarm'
-package=$(basename "${file}")
-for package_config_file in $(find "${file}" -type f); do
-    target_config_file="${package_config_file#/nenadalm-config/${package}}"
-    if [[ $2 -eq 0 ]]; then
-        rm -f "${target_config_file}.rpmsave" "${target_config_file}.orig"
-        if [[ -h "${target_config_file}" && $(readlink "${target_config_file}" = "${package_config_file}") ]]; then
-            rm -f "${target_config_file}"
-        fi
-    fi
-    if [[ -e "${target_config_file}.rpmnew" ]]; then
-        mv "${target_config_file}.rpmnew" "${target_config_file}.orig"
-    fi
-done
+nc-triggerpostun "${1}" "${2}" '/nenadalm-config/phpfarm'
 
 %files
 /%{name}
+%attr(755,-,-) /usr/bin/nc-triggerin
+%attr(755,-,-) /usr/bin/nc-triggerun
+%attr(755,-,-) /usr/bin/nc-triggerpostun
 

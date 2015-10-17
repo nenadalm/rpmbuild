@@ -47,7 +47,7 @@ function testCustomDirectoryContainsConfigFilesWhenConfigPackageIsInstalledAfter
     fi
 
     assertNotNull "\"${package_dir}\" is empty when it's not supposed to" "${package_files}"
-    assertNotNull "\"${package_dir}/custom\" is empty when it's supposed to" "${custom_files}"
+    assertNotNull "\"${package_dir}/custom\" is empty when it's not supposed to" "${custom_files}"
 }
 
 function testCustomDirectoryIsEmptyWhenConfigPackageIsInstalledAfterPackageAndThenRemoved() {
@@ -88,7 +88,7 @@ function testCustomDirectoryContainsConfigFilesWhenConfigPackageIsInstalledBefor
     fi
 
     assertNotNull "\"${package_dir}\" is empty when it's not supposed to" "${package_files}"
-    assertNotNull "\"${package_dir}/custom\" is empty when it's supposed to" "${custom_files}"
+    assertNotNull "\"${package_dir}/custom\" is empty when it's not supposed to" "${custom_files}"
 }
 
 function testCustomDirectoryIsEmptyWhenConfigPackageIsInstalledBeforePackageAndThenRemoved() {
