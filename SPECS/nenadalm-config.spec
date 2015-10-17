@@ -71,6 +71,9 @@ for package_config_file in $(find "${file}" -type f); do
     target_config_file="${package_config_file#/nenadalm-config/${package}}"
     if [[ $2 -eq 0 ]]; then
         rm -f "${target_config_file}.rpmsave" "${target_config_file}.orig"
+        if [[ -h "${target_config_file}" && $(readlink "${target_config_file}" = "${package_config_file}") ]]; then
+            rm -f "${target_config_file}"
+        fi
     fi
     if [[ -e "${target_config_file}.rpmnew" ]]; then
         mv "${target_config_file}.rpmnew" "${target_config_file}.orig"
