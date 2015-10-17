@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -eu
+
+cd $(dirname "${0}")
+
+name=nenadalm-config
+version=$(rpm -q --specfile "../SPECS/${name}.spec" --info | grep Version | grep -oP '[^ ]+$')
+archive="../SOURCES/nenadalm-config-${version}.tar.gz"
+packages=$(tar -tf "${archive}" | cut -d'/' -f 2 | uniq | grep '^[^_]')
+
+triggers=
+for package in "${packages[@]}"; do
+    triggers=$(cat <<EOF
+${triggers}
+%triggerin -- phpfarm
+nc-triggerin '/${name}/phpfarm'
+
+%triggerun -- phpfarm
+nc-triggerun "\\\\\\\${1}" "\\\\\\\${2}" '/${name}/${package}'
+
+%triggerpostun -- phpfarm
+nc-triggerpostun "\\\${1}" "\\\${2}" '/${name}/${package}'
+EOF
+)
+done
+
+result=$(perl -0777 -pe "s|(?<=### START GENERATED_SECTION).*(?=### END GENERATED_SECTION)|${triggers}\n|s" "../SPECS/${name}.spec")
+
+echo "${result}" > "../SPECS/${name}.spec"
+printf "\n" >> "../SPECS/${name}.spec"
+
