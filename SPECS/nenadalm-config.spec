@@ -35,6 +35,17 @@ for file in $(find '/nenadalm-config' -mindepth 1 -maxdepth 1 -type d); do
 done
 
 ### START GENERATED_SECTION
+# postgresql-server
+%triggerin -- postgresql-server
+nc-triggerin '/nenadalm-config/postgresql-server'
+
+%triggerun -- postgresql-server
+nc-triggerun "\${1}" "\${2}" '/nenadalm-config/postgresql-server'
+
+%triggerpostun -- postgresql-server
+nc-triggerpostun "${1}" "${2}" '/nenadalm-config/postgresql-server'
+
+# phpfarm
 %triggerin -- phpfarm
 nc-triggerin '/nenadalm-config/phpfarm'
 
@@ -43,6 +54,7 @@ nc-triggerun "\${1}" "\${2}" '/nenadalm-config/phpfarm'
 
 %triggerpostun -- phpfarm
 nc-triggerpostun "${1}" "${2}" '/nenadalm-config/phpfarm'
+
 ### END GENERATED_SECTION
 
 %files

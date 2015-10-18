@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+data_dir=/var/lib/pgsql/data
+config_file="${data_dir}/pg_hba.conf"
+rpmbuild_dir=/mnt/rpmbuild
+working_dir=/tmp/rpmtest
+
+function oneTimeSetUp() {
+    mkdir -p "${working_dir}"
+    packages=('nenadalm-config')
+    for package in "${packages[@]}"; do
+        rpm_file=$(rpmbuild -bb "/root/rpmbuild/SPECS/${package}.spec" | grep -oP '(?<=Wrote: ).*')
+        cp "${rpm_file}" "${working_dir}/${package}.rpm"
+    done
+    cd "${working_dir}"
+}
+
+function tearDown() {
+    dnf remove -y postgresql-server nenadalm-config
+}
+
+function testConfigFileDoesntExistWhenPackageIsInstalled() {
+    dnf install -y postgresql-server
+
+    assertTrue "\"${config_file}\" exists when the package is installed" "[[ ! -e ${config_file} ]]"
+}
+
+function testConfigFileIsSymlinkWhenConfigPackageIsInstalledAfterPackage() {
+    dnf install -y postgresql-server
+    dnf install -y ./nenadalm-config.rpm
+
+    assertTrue "\"${config_file}\" doesn't exists when it should" "[[ -e ${config_file} ]]"
+    assertTrue "\"${config_file}\" is not symlink when it should be" "[[ -h ${config_file} ]]"
+}
+
+function testConfigFileDoesntExistWhenConfigPackageIsInstalledAfterPackageAndThenRemoved() {
+    dnf install -y postgresql-server
+    dnf install -y ./nenadalm-config.rpm
+    dnf remove -y nenadalm-config
+
+    assertTrue "\"${config_file}\" exists when it shouldn't" "[[ ! -e ${config_file} ]]"
+}
+
+function testConfigFileIsSymlinkWhenConfigPackageIsInstalledBeforePackage() {
+    dnf install -y ./nenadalm-config.rpm
+    dnf install -y postgresql-server
+
+    assertTrue "\"${config_file}\" doesn't exists when it should" "[[ -e ${config_file} ]]"
+    assertTrue "\"${config_file}\" is not symlink when it should be" "[[ -h ${config_file} ]]"
+}
+
+function testConfigFileDoesntExistWhenConfigPackageIsInstalledBeforePackageAndThenRemoved() {
+    dnf install -y ./nenadalm-config.rpm
+    dnf install -y postgresql-server
+    dnf remove -y nenadalm-config
+
+    assertTrue "\"${config_file}\" exists when it shouldn't" "[[ ! -e ${config_file} ]]"
+}
+
