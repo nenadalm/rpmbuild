@@ -40,7 +40,7 @@ done
 nc-triggerin '/nenadalm-config/postgresql-server'
 
 %triggerun -- postgresql-server
-nc-triggerun "\${1}" "\${2}" '/nenadalm-config/postgresql-server'
+nc-triggerun "${1}" "${2}" '/nenadalm-config/postgresql-server'
 
 %triggerpostun -- postgresql-server
 nc-triggerpostun "${1}" "${2}" '/nenadalm-config/postgresql-server'
@@ -50,7 +50,7 @@ nc-triggerpostun "${1}" "${2}" '/nenadalm-config/postgresql-server'
 nc-triggerin '/nenadalm-config/phpfarm'
 
 %triggerun -- phpfarm
-nc-triggerun "\${1}" "\${2}" '/nenadalm-config/phpfarm'
+nc-triggerun "${1}" "${2}" '/nenadalm-config/phpfarm'
 
 %triggerpostun -- phpfarm
 nc-triggerpostun "${1}" "${2}" '/nenadalm-config/phpfarm'

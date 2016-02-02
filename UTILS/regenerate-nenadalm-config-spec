@@ -18,7 +18,7 @@ ${triggers}
 nc-triggerin '/${name}/${package}'
 
 %triggerun -- ${package}
-nc-triggerun "\\\\\\\${1}" "\\\\\\\${2}" '/${name}/${package}'
+nc-triggerun "\\\${1}" "\\\${2}" '/${name}/${package}'
 
 %triggerpostun -- ${package}
 nc-triggerpostun "\\\${1}" "\\\${2}" '/${name}/${package}'
