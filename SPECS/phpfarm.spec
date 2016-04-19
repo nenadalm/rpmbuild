@@ -9,7 +9,7 @@ Source0: https://github.com/fpoirotte/phpfarm/archive/v%{version}.tar.gz#/%{name
 
 BuildArch: noarch
 Requires(pre): shadow-utils
-Requires: make,wget,gcc,mod_fcgid,tar,bzip2,autoconf,libxml2-devel,libcurl,postgresql-devel,openssl-devel,libssh2-devel,openldap-devel,turbojpeg-devel,libjpeg-turbo-devel,libpng-devel,libicu-devel,libmcrypt-devel,ImageMagick-devel,librabbitmq-devel,gcc-c++,glibc-headers,binutils
+Requires: make,wget,gcc,mod_fcgid,tar,bzip2,autoconf,libxml2-devel,libcurl-devel,postgresql-devel,openssl-devel,libssh2-devel,openldap-devel,turbojpeg-devel,libjpeg-turbo-devel,libpng-devel,libicu-devel,libmcrypt-devel,ImageMagick-devel,librabbitmq-devel,gcc-c++,glibc-headers,binutils
 
 %global __requires_exclude /bin/php$
 

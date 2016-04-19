@@ -1,7 +1,7 @@
 #todo: remove empty dirs when package gets removed
 
 Name: nenadalm-config
-Version: 0.0.1
+Version: 0.0.2
 Release: 1%{?dist}
 Summary: Config
 
