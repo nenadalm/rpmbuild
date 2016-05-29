@@ -1,6 +1,6 @@
 Name: nenadalm-packages
 Version: 0.0.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Config
 
 License: MIT
@@ -10,6 +10,8 @@ Requires: nenadalm-config,community-mysql-server,postgresql-server,rabbitmq-serv
 
 %description
 Installs all the packages
+
+%files
 
 %changelog
 * Sun May 29 2016 Miloslav Nenadal <nenadalm@gmail.com> 0.0.1-1
