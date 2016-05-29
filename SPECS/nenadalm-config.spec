@@ -1,7 +1,5 @@
-#todo: remove empty dirs when package gets removed
-
 Name: nenadalm-config
-Version: 0.0.2
+Version: 0.0.3
 Release: 1%{?dist}
 Summary: Config
 
@@ -22,6 +20,7 @@ mkdir -p %{buildroot}/usr/bin
 cp -R %{_builddir}/%{name}-%{version}/_bin/* %{buildroot}/usr/bin
 rm -rf %{_builddir}/%{name}-%{version}/_bin
 cp -R %{_builddir}/%{name}-%{version} %{buildroot}/%{name}
+cp -R %{_builddir}/%{name}-%{version}/_common/* %{buildroot}
 
 %preun
 for file in $(find '/nenadalm-config' -mindepth 1 -maxdepth 1 -type d); do
@@ -59,6 +58,7 @@ nc-triggerpostun "${1}" "${2}" '/nenadalm-config/phpfarm'
 
 %files
 /%{name}
+/etc/skel
 %attr(755,-,-) /usr/bin/nc-triggerin
 %attr(755,-,-) /usr/bin/nc-triggerun
 %attr(755,-,-) /usr/bin/nc-triggerpostun
