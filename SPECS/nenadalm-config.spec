@@ -1,6 +1,6 @@
 Name: nenadalm-config
 Version: 0.0.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Config
 
 License: MIT
@@ -20,7 +20,6 @@ mkdir -p %{buildroot}/usr/bin
 cp -R %{_builddir}/%{name}-%{version}/_bin/* %{buildroot}/usr/bin
 rm -rf %{_builddir}/%{name}-%{version}/_bin
 cp -R %{_builddir}/%{name}-%{version} %{buildroot}/%{name}
-cp -R %{_builddir}/%{name}-%{version}/_common/* %{buildroot}
 
 %preun
 for file in $(find '/nenadalm-config' -mindepth 1 -maxdepth 1 -type d); do
@@ -54,11 +53,40 @@ nc-triggerun "${1}" "${2}" '/nenadalm-config/phpfarm'
 %triggerpostun -- phpfarm
 nc-triggerpostun "${1}" "${2}" '/nenadalm-config/phpfarm'
 
+# awesome
+%triggerin -- awesome
+nc-triggerin '/nenadalm-config/awesome'
+
+%triggerun -- awesome
+nc-triggerun "${1}" "${2}" '/nenadalm-config/awesome'
+
+%triggerpostun -- awesome
+nc-triggerpostun "${1}" "${2}" '/nenadalm-config/awesome'
+
+# vim-common
+%triggerin -- vim-common
+nc-triggerin '/nenadalm-config/vim-common'
+
+%triggerun -- vim-common
+nc-triggerun "${1}" "${2}" '/nenadalm-config/vim-common'
+
+%triggerpostun -- vim-common
+nc-triggerpostun "${1}" "${2}" '/nenadalm-config/vim-common'
+
+# bash
+%triggerin -- bash
+nc-triggerin '/nenadalm-config/bash'
+
+%triggerun -- bash
+nc-triggerun "${1}" "${2}" '/nenadalm-config/bash'
+
+%triggerpostun -- bash
+nc-triggerpostun "${1}" "${2}" '/nenadalm-config/bash'
+
 ### END GENERATED_SECTION
 
 %files
 /%{name}
-/etc/skel
 %attr(755,-,-) /usr/bin/nc-triggerin
 %attr(755,-,-) /usr/bin/nc-triggerun
 %attr(755,-,-) /usr/bin/nc-triggerpostun
