@@ -4,5 +4,5 @@ services:
     - docker
 
 script:
-    - ./TESTS/run-all
+    - sudo ./TESTS/run-all
 
