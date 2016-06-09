@@ -1,12 +1,12 @@
 Name: nenadalm-packages
 Version: 0.0.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Config
 
 License: MIT
 
 BuildArch: noarch
-Requires: nenadalm-config,phpfarm,dex-autostart,community-mysql-server,postgresql-server,rabbitmq-server,awesome,vim,gvim,terminator,firefox,git,evince,thunderbird
+Requires: dex-autostart,community-mysql-server,postgresql-server,rabbitmq-server,awesome,vim,gvim,terminator,firefox,git,evince,thunderbird,nenadalm-config,phpfarm
 
 %description
 Installs all the packages
