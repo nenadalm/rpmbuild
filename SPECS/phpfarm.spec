@@ -1,6 +1,6 @@
 Name: phpfarm
 Version: 0.2.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Set of scripts to install a dozen of PHP versions in parallel on a single system
 
 License: AGPLv3+
@@ -42,7 +42,9 @@ fi
 %attr(-, phpfarm, phpfarm) /opt/phpfarm/
 
 %changelog
-* Sun Oct 11 2015  Miloslav Nenadal <nenadalm@gmail.com> 0.2.0-2
+* Sat Jul 09 2016 Miloslav Nenadal <nenadalm@gmail.com> 0.2.0-4
+- Fixed requires
+* Sun Oct 11 2015 Miloslav Nenadal <nenadalm@gmail.com> 0.2.0-2
 - Add script to change PATH
 * Sat Oct 10 2015 Miloslav Nenadal <nenadalm@gmail.com> 0.2.0-1
 - Initial packaging
