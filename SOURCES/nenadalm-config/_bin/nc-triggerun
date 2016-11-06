@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+file="${3}"
+if [[ $1 -eq 0 && $2 -gt 0 ]]; then
+    package=$(basename "${file}")
+    for package_config_file in $(find "${file}" -type f); do
+        target_config_file="${package_config_file#/nenadalm-config/${package}}"
+        if [[ -e "${target_config_file}.orig" ]]; then
+            mv -f "${target_config_file}.orig" "${target_config_file}"
+        fi
+    done
+fi
+

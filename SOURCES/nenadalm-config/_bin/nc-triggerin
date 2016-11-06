@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+file="${1}"
+package=$(basename "${file}")
+for package_config_file in $(find "${file}" -type f); do
+    target_config_file="${package_config_file#/nenadalm-config/${package}}"
+    if [[ ! -h "${target_config_file}" || ! $(readlink "${target_config_file}") = "${package_config_file}" ]]; then
+        existing_dir=$(dirname "${target_config_file}")
+        while [[ ! -e "${existing_dir}" ]]; do
+            existing_dir="${existing_dir%/*}"
+        done
+        mkdir -p $(dirname "${target_config_file}")
+        if [[ "${existing_dir}" != $(dirname "${target_config_file}") ]]; then
+            chown -R $(stat -c %U "${existing_dir}"):$(stat -c %G "${existing_dir}") "${existing_dir}"
+        fi
+        if [[ -e "${target_config_file}" ]]; then
+            mv -f "${target_config_file}" "${target_config_file}.orig"
+        fi
+        ln -s "${package_config_file}" "${target_config_file}"
+    fi
+done
+
