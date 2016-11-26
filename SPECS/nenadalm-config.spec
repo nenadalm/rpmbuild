@@ -1,6 +1,6 @@
 Name: nenadalm-config
-Version: 0.0.3
-Release: 3%{?dist}
+Version: 0.0.4
+Release: 1%{?dist}
 Summary: Config
 
 License: MIT
@@ -13,13 +13,13 @@ Requires: findutils
 Config
 
 %prep
-%autosetup
+%setup -n %{name}
 
 %install
 mkdir -p %{buildroot}/usr/bin
-cp -R %{_builddir}/%{name}-%{version}/_bin/* %{buildroot}/usr/bin
-rm -rf %{_builddir}/%{name}-%{version}/_bin
-cp -R %{_builddir}/%{name}-%{version} %{buildroot}/%{name}
+cp -R %{_builddir}/%{name}/_bin/* %{buildroot}/usr/bin
+rm -rf %{_builddir}/%{name}/_bin
+cp -R %{_builddir}/%{name} %{buildroot}/%{name}
 
 %preun
 for file in $(find '/nenadalm-config' -mindepth 1 -maxdepth 1 -type d); do
