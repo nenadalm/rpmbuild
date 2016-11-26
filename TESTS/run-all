@@ -5,5 +5,5 @@ set -eu
 cd "$(dirname ${0})/../"
 
 docker build -t nenadalm_rpmbuild_tests .
-docker run --privileged --rm --net=host -v $(pwd):/mnt/rpmbuild nenadalm_rpmbuild_tests
+docker run --rm --net=host nenadalm_rpmbuild_tests
 
